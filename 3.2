@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void printList(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// 🔹 Part (b) — Print separate + common portions
+void printListsTogether(Node* headA, Node* headB) {
+    // Step 1: Find lengths
+    Node *tempA = headA, *tempB = headB;
+    int lenA = 0, lenB = 0;
+    while (tempA) { lenA++; tempA = tempA->next; }
+    while (tempB) { lenB++; tempB = tempB->next; }
+
+    // Step 2: Align both lists
+    tempA = headA;
+    tempB = headB;
+    if (lenA > lenB) {
+        for (int i = 0; i < lenA - lenB; i++)
+            tempA = tempA->next;
+    } else {
+        for (int i = 0; i < lenB - lenA; i++)
+            tempB = tempB->next;
+    }
+
+    // Step 3: Find first common node
+    while (tempA && tempB && tempA != tempB) {
+        tempA = tempA->next;
+        tempB = tempB->next;
+    }
+
+    Node* common = tempA;  // may be NULL if no merge
+
+    // Step 4: Print results
+    printf("Initial part of List A : ");
+    for (Node* t = headA; t && t != common; t = t->next)
+        printf("%d ", t->data);
+    printf("\n");
+
+    printf("Initial part of List B : ");
+    for (Node* t = headB; t && t != common; t = t->next)
+        printf("%d ", t->data);
+    printf("\n");
+
+    printf("Common part : ");
+    for (Node* t = common; t; t = t->next)
+        printf("%d ", t->data);
+    printf("\n");
+}
+
+int main() {
+    srand(time(0));
+
+    int n;
+    printf("Enter total number of nodes (n): ");
+    scanf("%d", &n);
+
+    Node *headA = NULL, *headB = NULL;
+    Node *tailA = NULL, *tailB = NULL, *mergePoint = NULL;
+    int merged = 0;
+
+    for (int count = 0; count < n; count++) {
+        Node* newNode = createNode(rand() % 1000);
+
+        if (merged) {
+            // Already merged → append to common tail
+            tailA->next = newNode;
+            tailA = newNode;
+            continue;
+        }
+
+        // Random merge decision (about 1/5 chance)
+        if ((rand() % 5 == 0) && headA && headB) {
+            mergePoint = newNode;
+            merged = 1;
+            if (tailA) tailA->next = mergePoint;
+            if (tailB) tailB->next = mergePoint;
+            tailA = mergePoint;
+            continue;
+        }
+
+        // Randomly append to A or B
+        if (rand() % 2 == 0) {
+            if (!headA) headA = newNode;
+            else tailA->next = newNode;
+            tailA = newNode;
+        } else {
+            if (!headB) headB = newNode;
+            else tailB->next = newNode;
+            tailB = newNode;
+        }
+    }
+
+    printf("\n## Part (a)\n");
+    printf("List A : ");
+    printList(headA);
+    printf("List B : ");
+    printList(headB);
+
+    printf("\n## Part (b)\n");
+    printListsTogether(headA, headB);
+
+    return 0;
+}
