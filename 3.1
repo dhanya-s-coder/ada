@@ -1,0 +1,45 @@
+#include <stdio.h>
+
+int containsNearbyDuplicate(int arr[], int n, int k) {
+    int maxVal = 10000; // assume elements are <= 10000
+    int freq[maxVal + 1];
+
+    // initialize frequency array
+    for (int i = 0; i <= maxVal; i++)
+        freq[i] = 0;
+
+    // sliding window of size k
+    for (int i = 0; i < n; i++) {
+        if (freq[arr[i]] > 0)
+            return 1;  // duplicate found within k distance
+
+        freq[arr[i]]++;  // add current element to window 4 1 2 3 5 6 7 4
+
+        // if window size exceeds k, remove oldest element
+        if (i >= k)
+            freq[arr[i - k]]--;
+    }
+
+    return 0;  // no duplicates found
+}
+
+int main() {
+    int n, k;
+    printf("Enter size of array: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter array elements: ");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    printf("Enter k: ");
+    scanf("%d", &k);
+
+    if (containsNearbyDuplicate(arr, n, k))
+        printf("True\n");
+    else
+        printf("False\n");
+
+    return 0;
+}
