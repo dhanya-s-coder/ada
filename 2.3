@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+// 🔹 Function to create a new node
+struct Node* createNode(int value) {
+    struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// 🔹 Function to insert node at the end (using single pointer)
+struct Node* insertAtEnd(struct Node *head, int value) {
+    struct Node *newNode = createNode(value);
+
+    // If list is empty
+    if (head == NULL) {
+        head = newNode;
+    } else {
+        struct Node *temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+    return head;   // return updated head
+}
+
+// 🔹 Function to print the list
+void printList(struct Node *head) {
+    while (head != NULL) {
+        printf("%d -> ", head->data);
+        head = head->next;
+    }
+    printf("NULL\n");
+}
+struct Node* sort(struct Node *head1,struct Node *head2){
+    struct Node *temp1 = head1;
+    struct Node *temp2 = head2;
+    while(temp1!=NULL&&temp2!=NULL){
+         if(temp1->data>temp2->data){
+        printf("%d->",temp2->data);
+        temp2=temp2->next;
+    }
+    else{
+        printf("%d->",temp1->data);
+        temp1=temp1->next;
+    }
+    
+    }
+    while(temp1==NULL&&temp2!=NULL){
+        printf("%d->",temp2->data);
+        temp2=temp2->next;
+    }
+    while(temp2==NULL&&temp1!=NULL){
+        printf("%d->",temp1->data);
+        temp1=temp1->next;
+    }
+    printf("NULL");
+   
+}
+int main() {
+    struct Node *head1 = NULL;
+    struct Node *head2 = NULL;
+    int n,m, val;
+
+    printf("Enter number of nodes: ");
+    scanf("%d", &n);
+  printf("Enter number of nodes: ");
+    scanf("%d", &m);
+    for (int i = 0; i < n; i++) {
+        printf("Enter value for node %d: ", i + 1);
+        scanf("%d", &val);
+        head1 = insertAtEnd(head1, val);  // update head each time
+    }
+    for (int i = 0; i < m; i++) {
+        printf("Enter value for node %d: ", i + 1);
+        scanf("%d", &val);
+        head2 = insertAtEnd(head2, val);  // update head each time
+    }
+sort(head1,head2);
+    
+
+    return 0;
+}
