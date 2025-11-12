@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+    printf("Enter the size of the array: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter the array: ");
+    for(int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    int k;
+    printf("Enter k: ");
+    scanf("%d", &k);
+
+    if(k > n) {
+        printf("Window size k cannot be larger than array size.\n");
+        return 0;
+    }
+
+    // Calculate sum of first window
+    int window_sum = 0;
+    for(int i = 0; i < k; i++)
+        window_sum += arr[i];
+
+    int max_sum = window_sum;
+
+    // Slide the window
+    for(int i = k; i < n; i++) {
+        window_sum = window_sum + arr[i] - arr[i - k];  // add next element, remove first element of previous window
+        if(window_sum > max_sum)
+            max_sum = window_sum;
+    }
+
+    printf("Window sum [%d:%d] = %d\n", 0, k-1, max_sum);
+
+    return 0;
+}
