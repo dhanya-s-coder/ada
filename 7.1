@@ -1,0 +1,81 @@
+#include <iostream>
+using namespace std;
+
+void swap(int &a, int &b) {
+    int t = a;
+    a = b;
+    b = t;
+}
+
+// Heapify at index i in heap of size n
+void heapify(int heap[], int n, int i) {
+    int smallest = i;
+    int left = 2*i + 1;
+    int right = 2*i + 2;
+
+    if (left < n && heap[left] < heap[smallest])
+        smallest = left;
+    if (right < n && heap[right] < heap[smallest])
+        smallest = right;
+
+    if (smallest != i) {
+        swap(heap[i], heap[smallest]);
+        heapify(heap, n, smallest);
+    }
+}
+
+// Build min-heap
+void buildHeap(int heap[], int n) {
+    for (int i = n/2 - 1; i >= 0; i--)
+        heapify(heap, n, i);
+}
+
+// Extract min (root) from heap of size n
+int extractMin(int heap[], int &n) {
+    int root = heap[0];
+    heap[0] = heap[n-1];
+    n--;
+    heapify(heap, n, 0);
+    return root;
+}
+
+int main() {
+    int m, n, k;
+    cout << "Enter the values of m and n: ";
+    cin >> m >> n;
+
+    int A[m], B[n];
+    cout << "Enter the array A: ";
+    for (int i = 0; i < m; i++)
+        cin >> A[i];
+
+    cout << "Enter the array B: ";
+    for (int i = 0; i < n; i++)
+        cin >> B[i];
+
+    cout << "Enter the value of k: ";
+    cin >> k;
+
+    // Step 1: Generate all point sums
+    int total = m * n;
+    int heap[total];
+    int index = 0;
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            heap[index++] = A[i] + B[j];
+        }
+    }
+
+    // Step 2: Build min-heap
+    buildHeap(heap, total);
+
+    // Step 3: Extract k smallest sums
+    cout << "The kth smallest point sums are:\n";
+    for (int i = 0; i < k; i++) {
+        int sum = extractMin(heap, total);
+        cout << sum << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
