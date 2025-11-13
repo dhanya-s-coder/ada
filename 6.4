@@ -1,0 +1,76 @@
+#include <iostream>
+using namespace std;
+
+// Har non-zero element ko store karne ke liye ek structure
+struct Element {
+    int row;   // row number
+    int col;   // column number
+    int val;   // value (non-zero)
+};
+
+// Function jo do sparse matrices add karega
+void addSparse(Element A[], int n1, Element B[], int n2) {
+    int i = 0, j = 0;
+
+    cout << "Result (row col value):\n";
+
+    // Jab tak dono arrays me elements bache hain
+    while (i < n1 && j < n2) {
+        // Agar dono ka position same hai → value add karo
+        if (A[i].row == B[j].row && A[i].col == B[j].col) {
+            int sum = A[i].val + B[j].val;
+            if (sum != 0)
+                cout << A[i].row << " " << A[i].col << " " << sum << endl;
+            i++;
+            j++;
+        }
+        // Agar A ka element pehle aata hai → usse print karo
+        else if (A[i].row < B[j].row ||
+                 (A[i].row == B[j].row && A[i].col < B[j].col)) {
+            cout << A[i].row << " " << A[i].col << " " << A[i].val << endl;
+            i++;
+        }
+        // Agar B ka element pehle aata hai → usse print karo
+        else {
+            cout << B[j].row << " " << B[j].col << " " << B[j].val << endl;
+            j++;
+        }
+    }
+
+    // Agar A me kuch elements bache hain
+    while (i < n1) {
+        cout << A[i].row << " " << A[i].col << " " << A[i].val << endl;
+        i++;
+    }
+
+    // Agar B me kuch elements bache hain
+    while (j < n2) {
+        cout << B[j].row << " " << B[j].col << " " << B[j].val << endl;
+        j++;
+    }
+}
+
+int main() {
+    // 🔹 Matrix 1 (non-zero elements)
+    Element A[] = {
+        {0, 0, 1},
+        {0, 2, 2},
+        {1, 2, 3},
+        {2, 0, 4}
+    };
+
+    // 🔹 Matrix 2 (non-zero elements)
+    Element B[] = {
+        {0, 0, 5},
+        {1, 2, 6},
+        {2, 1, 7}
+    };
+
+    int n1 = 4; // A me 4 non-zero elements
+    int n2 = 3; // B me 3 non-zero elements
+
+    // Function call
+    addSparse(A, n1, B, n2);
+
+    return 0;
+}
