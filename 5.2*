@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+#define MAX 10  // maximum matrix size
+
+// Recursive function to multiply matrices
+void multiply(int A[MAX][MAX], int B[MAX][MAX], int C[MAX][MAX],
+              int aRow, int aCol, int bRow, int bCol, int cRow, int cCol, int n) {
+
+    if (n == 1) {
+        C[cRow][cCol] += A[aRow][aCol] * B[bRow][bCol];
+        return;
+    }
+
+    int k = n / 2;
+
+    // Divide and conquer — recursively calculate each quadrant
+    multiply(A, B, C, aRow, aCol, bRow, bCol, cRow, cCol, k);                 // C11 += A11*B11
+    multiply(A, B, C, aRow, aCol + k, bRow + k, bCol, cRow, cCol, k);        // C11 += A12*B21
+
+    multiply(A, B, C, aRow, aCol, bRow, bCol + k, cRow, cCol + k, k);        // C12 += A11*B12
+    multiply(A, B, C, aRow, aCol + k, bRow + k, bCol + k, cRow, cCol + k, k);// C12 += A12*B22
+
+    multiply(A, B, C, aRow + k, aCol, bRow, bCol, cRow + k, cCol, k);        // C21 += A21*B11
+    multiply(A, B, C, aRow + k, aCol + k, bRow + k, bCol, cRow + k, cCol, k);// C21 += A22*B21
+
+    multiply(A, B, C, aRow + k, aCol, bRow, bCol + k, cRow + k, cCol + k, k);// C22 += A21*B12
+    multiply(A, B, C, aRow + k, aCol + k, bRow + k, bCol + k, cRow + k, cCol + k, k);// C22 += A22*B22
+}
+
+int main() {
+    int n;
+    int A[MAX][MAX], B[MAX][MAX], C[MAX][MAX] = {0};
+
+    printf("Enter matrix size (power of 2, ≤ %d): ", MAX);
+    scanf("%d", &n);
+
+    printf("Enter elements of matrix A:\n");
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            scanf("%d", &A[i][j]);
+
+    printf("Enter elements of matrix B:\n");
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            scanf("%d", &B[i][j]);
+
+    multiply(A, B, C, 0, 0, 0, 0, 0, 0, n);
+
+    printf("\nResultant Matrix C:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            printf("%d ", C[i][j]);
+        printf("\n");
+    }
+
+    return 0;
+}
