@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+// Recursive function for C(n, m)
+int countWays(int n, int m) {
+    // Base cases
+    if (n == 0 && m == 0)
+        return 1;
+    if (n < 0 || m <= 0)
+        return 0;
+
+    // Recurrence relation
+    return countWays(n - 1, m - 1) +
+           countWays(n - 2, m - 1) +
+           countWays(n - 3, m - 1);
+}
+
+int main() {
+    int n;
+    printf("Enter number of stairs (n): ");
+    scanf("%d", &n);
+
+    int total = 0;
+    printf("\nC(%d, m) values:\n", n);
+    for (int m = 0; m <= n; m++) {
+        int ways = countWays(n, m);
+        printf("C(%d, %d) = %d\n", n, m, ways);
+        total += ways;
+    }
+
+    printf("\nTotal number of ways to climb %d stairs = %d\n", n, total);
+    return 0;
+}
+
