@@ -1,0 +1,52 @@
+#include<stdio.h>
+int main(){
+    int n;
+    scanf("%d",&n);
+    int c;
+    scanf("%d",&c);
+    double w[n],v[n];
+    double a[n];
+    int i,j;
+    for(i=0;i<n;i++){
+        scanf("%lf",&w[i]);
+        scanf("%lf",&v[i]);
+        a[i]=v[i]/w[i];
+    }
+    
+   for (i = 0; i < n - 1; i++) {
+        for (j = i + 1; j < n; j++) {
+            if (a[i] < a[j]) {
+                double temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+
+                double tempw = w[i];
+                w[i] = w[j];
+                w[j] = tempw;
+
+                double tempv = v[i];
+                v[i] = v[j];
+                v[j] = tempv;
+            }
+        }
+    }
+    int sum=0;
+    int d=0;
+    int e=0;
+    for(i=0;i<n;i++){
+     
+        if(w[i]<=c){
+            c=c-(w[i]);
+             d=d+w[i];
+        e=e+(d);
+            sum=sum+v[i];
+        }else{
+            sum=sum+(a[i]*c);
+               d=d+c;
+        e=e+(d);
+            c=0;
+            break;
+        }
+    }
+    printf("%d %d",sum,e);
+}
