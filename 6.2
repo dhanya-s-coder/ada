@@ -1,0 +1,79 @@
+#include <stdio.h>
+
+void merge(int a[], int b[], int l, int m, int r) {
+    int n1 = m - l + 1, n2 = r - m;
+    int A[n1], B[n1], C[n2], D[n2];
+    for (int i = 0; i < n1; i++) {
+        A[i] = a[l + i];
+        B[i] = b[l + i];
+    }
+    for (int j = 0; j < n2; j++) {
+        C[j] = a[m + 1 + j];
+        D[j] = b[m + 1 + j];
+    }
+
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) {
+        if (A[i] <= C[j]) {
+            a[k] = A[i];
+            b[k] = B[i];
+            i++;
+        } else {
+            a[k] = C[j];
+            b[k] = D[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1) {
+        a[k] = A[i];
+        b[k] = B[i];
+        i++; k++;
+    }
+    while (j < n2) {
+        a[k] = C[j];
+        b[k] = D[j];
+        j++; k++;
+    }
+}
+
+void mergeSort(int a[], int b[], int l, int r) {
+    if (l < r) {
+        int m = (l + r) / 2;
+        mergeSort(a, b, l, m);
+        mergeSort(a, b, m + 1, r);
+        merge(a, b, l, m, r);
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    int a[n], b[n];
+    for (int i = 0; i < n; i++)
+        scanf("%d %d", &a[i], &b[i]);
+
+    mergeSort(a, b, 0, n - 1);
+
+    int resA[n], resB[n];
+    int k = 0;
+
+    resA[0] = a[0];
+    resB[0] = b[0];
+
+    for (int i = 1; i < n; i++) {
+        if (a[i] <= resB[k]) {
+            if (b[i] > resB[k])
+                resB[k] = b[i];
+        } else {
+            k++;
+            resA[k] = a[i];
+            resB[k] = b[i];
+        }
+    }
+
+    for (int i = 0; i <= k; i++)
+        printf("[%d, %d]\n", resA[i], resB[i]);
+
+    return 0;
+}
