@@ -1,0 +1,120 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+#define MAX 100
+
+// Structure to store a point
+struct Point {
+    float x, y;
+};
+
+// Structure for an edge (between two points)
+struct Edge {
+    int u, v;
+    float w; // weight (distance)
+};
+
+// Find parent function (Union-Find)
+int findParent(int parent[], int i) {
+    while (parent[i] != i)
+        i = parent[i];
+    return i;
+}
+
+// Union of two sets
+void unionSets(int parent[], int i, int j) {
+    int pi = findParent(parent, i);
+    int pj = findParent(parent, j);
+    parent[pi] = pj;
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of points (n): ";
+    cin >> n;
+
+    Point P[MAX];
+    cout << "Enter the coordinates (x, y) of each point:\n";
+    for (int i = 0; i < n; i++)
+        cin >> P[i].x >> P[i].y;
+
+    // Step 1: Create all possible edges
+    Edge E[MAX * MAX];
+    int edgeCount = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            E[edgeCount].u = i;
+            E[edgeCount].v = j;
+            E[edgeCount].w = sqrt(pow(P[i].x - P[j].x, 2) + pow(P[i].y - P[j].y, 2));
+            edgeCount++;
+        }
+    }
+
+    // Step 2: Sort edges by weight (simple bubble sort)
+    for (int i = 0; i < edgeCount - 1; i++) {
+        for (int j = i + 1; j < edgeCount; j++) {
+            if (E[i].w > E[j].w) {
+                Edge temp = E[i];
+                E[i] = E[j];
+                E[j] = temp;
+            }
+        }
+    }
+
+    // Step 3: Kruskal’s algorithm
+    int parent[MAX];
+    for (int i = 0; i < n; i++)
+        parent[i] = i;
+
+    Edge MST[MAX];
+    int mstCount = 0;
+
+    for (int i = 0; i < edgeCount; i++) {
+        int pu = findParent(parent, E[i].u);
+        int pv = findParent(parent, E[i].v);
+        if (pu != pv) {
+            MST[mstCount++] = E[i];
+            unionSets(parent, pu, pv);
+        }
+    }
+
+    // Step 4: Remove the longest edge from MST → 2 clusters
+    float maxEdge = -1;
+    int idx = -1;
+    for (int i = 0; i < mstCount; i++) {
+        if (MST[i].w > maxEdge) {
+            maxEdge = MST[i].w;
+            idx = i;
+        }
+    }
+
+    // Remove that edge
+    int removeU = MST[idx].u;
+    int removeV = MST[idx].v;
+
+    // Reset parents to re-form 2 groups
+    for (int i = 0; i < n; i++)
+        parent[i] = i;
+
+    for (int i = 0; i < mstCount; i++) {
+        if (i == idx) continue;
+        unionSets(parent, MST[i].u, MST[i].v);
+    }
+
+    // Step 5: Print two sets (A and B)
+    int rootA = findParent(parent, 0);
+
+    cout << "\nSet A:\n";
+    for (int i = 0; i < n; i++)
+        if (findParent(parent, i) == rootA)
+            cout << P[i].x << " " << P[i].y << endl;
+
+    cout << "Set B:\n";
+    for (int i = 0; i < n; i++)
+        if (findParent(parent, i) != rootA)
+            cout << P[i].x << " " << P[i].y << endl;
+
+    return 0;
+}
+
