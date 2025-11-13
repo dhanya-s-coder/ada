@@ -1,5 +1,4 @@
-#include <iostream>
-using namespace std;
+#include <stdio.h>
 
 // Har non-zero element ko store karne ke liye ek structure
 struct Element {
@@ -9,10 +8,10 @@ struct Element {
 };
 
 // Function jo do sparse matrices add karega
-void addSparse(Element A[], int n1, Element B[], int n2) {
+void addSparse(struct Element A[], int n1, struct Element B[], int n2) {
     int i = 0, j = 0;
 
-    cout << "Result (row col value):\n";
+    printf("Result (row col value):\n");
 
     // Jab tak dono arrays me elements bache hain
     while (i < n1 && j < n2) {
@@ -20,39 +19,39 @@ void addSparse(Element A[], int n1, Element B[], int n2) {
         if (A[i].row == B[j].row && A[i].col == B[j].col) {
             int sum = A[i].val + B[j].val;
             if (sum != 0)
-                cout << A[i].row << " " << A[i].col << " " << sum << endl;
+                printf("%d %d %d\n", A[i].row, A[i].col, sum);
             i++;
             j++;
         }
         // Agar A ka element pehle aata hai → usse print karo
         else if (A[i].row < B[j].row ||
                  (A[i].row == B[j].row && A[i].col < B[j].col)) {
-            cout << A[i].row << " " << A[i].col << " " << A[i].val << endl;
+            printf("%d %d %d\n", A[i].row, A[i].col, A[i].val);
             i++;
         }
         // Agar B ka element pehle aata hai → usse print karo
         else {
-            cout << B[j].row << " " << B[j].col << " " << B[j].val << endl;
+            printf("%d %d %d\n", B[j].row, B[j].col, B[j].val);
             j++;
         }
     }
 
     // Agar A me kuch elements bache hain
     while (i < n1) {
-        cout << A[i].row << " " << A[i].col << " " << A[i].val << endl;
+        printf("%d %d %d\n", A[i].row, A[i].col, A[i].val);
         i++;
     }
 
     // Agar B me kuch elements bache hain
     while (j < n2) {
-        cout << B[j].row << " " << B[j].col << " " << B[j].val << endl;
+        printf("%d %d %d\n", B[j].row, B[j].col, B[j].val);
         j++;
     }
 }
 
 int main() {
     // 🔹 Matrix 1 (non-zero elements)
-    Element A[] = {
+    struct Element A[] = {
         {0, 0, 1},
         {0, 2, 2},
         {1, 2, 3},
@@ -60,7 +59,7 @@ int main() {
     };
 
     // 🔹 Matrix 2 (non-zero elements)
-    Element B[] = {
+    struct Element B[] = {
         {0, 0, 5},
         {1, 2, 6},
         {2, 1, 7}
